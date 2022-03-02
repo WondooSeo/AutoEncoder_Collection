@@ -4,6 +4,11 @@
 
 Language : Python 3, Keras
 
-Change the **'path_dir**, **encoder_path**, **decoder_path**, and **'cae.fit(x_train, epochs=300, batch_size=50)'** in line 120.
+You must change the variables below:
+- **path_dir**
+- **encoder_path**
+- **decoder_path**
+- **"latent_dim = 20"** in line 86
+- **"cae.fit(x_train, epochs=300, batch_size=50)"** in line 120
 
 You have to modify layer if you want to tune with your flavor.
