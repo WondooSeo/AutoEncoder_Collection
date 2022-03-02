@@ -4,6 +4,8 @@
 
 Language : Python 3, Keras
 
+Based on [Keras VAE code example](https://keras.io/examples/generative/vae/)
+
 You must change the variables below:
 - **path_dir**
 - **encoder_path**
