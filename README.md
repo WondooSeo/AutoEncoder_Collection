@@ -6,4 +6,4 @@ Language : Python 3, Keras
 
 You have to modify layer if you want to tune with your flavor.
 
-This Convolutional AuteEncoder can modify Conv2D layer and latent dimension by yourself.
+This Convolutional AuteEncoder can modify encoder/decoder and latent dimension by yourself.
