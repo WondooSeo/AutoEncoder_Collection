@@ -6,13 +6,13 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import Model
 from tensorflow.keras import Sequential
+from tensorflow.keras.layers import ReLU
 from tensorflow.keras.layers import Input
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Reshape
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.layers import Conv2DTranspose
-from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.layers import BatchNormalization
 from sklearn.model_selection import train_test_split
 
@@ -47,30 +47,44 @@ def stacking_images(file_list):
 
 def CAE_encoder(latent_dim):
     encoder = Sequential(name='encoder')
-    encoder.add(Conv2D(filters=4, kernel_size=3, strides=2, activation='relu', padding='same', input_shape=(128, 128, 1)))
-    encoder.add(Conv2D(filters=8, kernel_size=3, strides=2, activation='relu', padding='same'))
+    encoder.add(Conv2D(filters=16, kernel_size=3, strides=2, padding='same', input_shape=(128, 128, 1)))
     encoder.add(BatchNormalization())
-    encoder.add(Conv2D(filters=16, kernel_size=3, strides=2, activation='relu', padding='same'))
-    encoder.add(Conv2D(filters=32, kernel_size=3, strides=2, activation='relu', padding='same'))
+    encoder.add(ReLU())
+    encoder.add(Conv2D(filters=32, kernel_size=3, strides=2, padding='same'))
     encoder.add(BatchNormalization())
+    encoder.add(ReLU())
+    encoder.add(Conv2D(filters=64, kernel_size=3, strides=2, padding='same'))
+    encoder.add(BatchNormalization())
+    encoder.add(ReLU())
+    encoder.add(Conv2D(filters=128, kernel_size=3, strides=2, padding='same'))
+    encoder.add(BatchNormalization())
+    encoder.add(ReLU())
     encoder.add(Flatten())
     encoder.add(Dense(latent_dim))
-    # encoder.summary()
+    encoder.summary()
     return encoder
 
 
 def CAE_decoder():
     decoder = Sequential(name='decoder')
-    decoder.add(Dense(8 * 8 * 32, activation='relu', input_shape=(latent_dim,)))
-    decoder.add(Reshape((8, 8, 32)))
-    decoder.add(Conv2DTranspose(filters=32, kernel_size=3, strides=2, activation='relu', padding='same'))
-    decoder.add(Conv2DTranspose(filters=16, kernel_size=3, strides=2, activation='relu', padding='same'))
+    decoder.add(Dense(8 * 8 * 128, input_shape=(latent_dim,)))
     decoder.add(BatchNormalization())
-    decoder.add(Conv2DTranspose(filters=8, kernel_size=3, strides=2, activation='relu', padding='same'))
-    decoder.add(Conv2DTranspose(filters=4, kernel_size=3, strides=2, activation='relu', padding='same'))
+    decoder.add(ReLU())
+    decoder.add(Reshape((8, 8, 128)))
+    decoder.add(Conv2DTranspose(filters=128, kernel_size=3, strides=2, padding='same'))
     decoder.add(BatchNormalization())
+    decoder.add(ReLU())
+    decoder.add(Conv2DTranspose(filters=64, kernel_size=3, strides=2, padding='same'))
+    decoder.add(BatchNormalization())
+    decoder.add(ReLU())
+    decoder.add(Conv2DTranspose(filters=32, kernel_size=3, strides=2, padding='same'))
+    decoder.add(BatchNormalization())
+    decoder.add(ReLU())
+    decoder.add(Conv2DTranspose(filters=16, kernel_size=3, strides=2, padding='same'))
+    decoder.add(BatchNormalization())
+    decoder.add(ReLU())
     decoder.add(Conv2DTranspose(filters=1, kernel_size=3, activation='sigmoid', padding='same'))
-    # decoder.summary()
+    decoder.summary()
     return decoder
 
 
@@ -102,7 +116,7 @@ if __name__ == '__main__':
     CAE = Model(CAE_input, CAE_decoder_output, name='CAE')
     CAE.summary()
 
-    CAE.compile(optimizer='adam', loss='binary_crossentropy', metrics=['mae', 'mse', 'accuracy'])
+    CAE.compile(optimizer='adam', loss='binary_crossentropy', metrics=['mae', 'mse'])
     history = CAE.fit(x_train, x_train, validation_split=0.15, epochs=100, batch_size=300, verbose=1, shuffle=True)
 
     # Latent vector code
@@ -122,9 +136,8 @@ if __name__ == '__main__':
     plt.show()
 
     test_scores = CAE.evaluate(x_test, verbose=0, batch_size=10)
-    # print(CAE.metrics_names) # → ['loss', 'mae', 'mse', 'accuracy']
+    # print(CAE.metrics_names) # → ['loss', 'mae', 'mse']
     print("Test Loss : ", test_scores[0])
-    print("Test Accuracy : ", test_scores[-1])
 
     encoder_path = 'your encoder path.h5'
     decoder_path = 'your decoder path.h5'
