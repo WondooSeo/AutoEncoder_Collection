@@ -81,8 +81,7 @@ if __name__ == '__main__':
     ## This is necessary for running CAE!!! ##
 
     latent_dim = 10
-    image_method = 'GREIT'
-    path_dir = './EIT_' + image_method
+    path_dir = 'your image path'
 
     ## Stacking a dataset
     file_list = stacking_files_dir(path_dir=path_dir)
@@ -127,7 +126,7 @@ if __name__ == '__main__':
     print("Test Loss : ", test_scores[0])
     print("Test Accuracy : ", test_scores[-1])
 
-    encoder_path = './encoder_'+str(latent_dim)+'_'+image_method+'.h5'
-    decoder_path = './decoder_'+str(latent_dim)+'_'+image_method+'.h5'
+    encoder_path = 'your encoder path.h5'
+    decoder_path = 'your decoder path.h5'
     encoder.save(encoder_path)
     decoder.save(decoder_path)
