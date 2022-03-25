@@ -1,6 +1,6 @@
 ※ _This project is licensed under the terms of the MIT license._ ※
 
-# AutoEncoder_Collection
+# AutoEncoder Collection
 
 Language : Python 3, Keras
 
