@@ -1,3 +1,5 @@
+# BE aware that this VAE is not that perfect right now
+
 ## Setup ##
 import os
 
