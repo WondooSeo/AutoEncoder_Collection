@@ -125,7 +125,7 @@ if __name__ == '__main__':
     CAE.summary()
 
     CAE.compile(optimizer='adam', loss='binary_crossentropy', metrics=['mae', 'mse'])
-    history = CAE.fit(x_train, x_train, validation_split=0.15, epochs=100, batch_size=300, verbose=1, shuffle=True)
+    history = CAE.fit(x_train, x_train, validation_split=0.15, epochs=30, batch_size=50, verbose=1, shuffle=True)
 
     # Latent vector code
     z_sample = [[0.5] * latent_dim]
